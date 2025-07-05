@@ -93,49 +93,13 @@ end)
 
 -- Show startup status
 hs.alert.show("🟢 Screenshot automation ready\nCurrent sequence: " .. screenshotCount)
-
--- Switch to text mode in OneNote when pressing Ctrl + Cmd
-hs.hotkey.bind({"ctrl", "cmd"}, "t", function()
-  local point = {x = 28, y = 93}
-  hs.mouse.setAbsolutePosition(point)
-  hs.eventtap.leftClick()
-  hs.alert("✏️ Switched to Text Mode")
-end)
--- Hotkey: Move to built-in display, pause video, return to OneNote
+-- Move to built-in display and click with Ctrl + Option + Cmd + V
 hs.hotkey.bind({"ctrl", "alt", "cmd"}, "v", function()
-  local builtInPoint = getBuiltInScreenCenter()
-  hs.mouse.setAbsolutePosition(builtInPoint)
-
-  -- Step 1: Click on lecture screen to pause
-  hs.eventtap.leftClick(builtInPoint)
-
-  -- Step 2: After short delay, move back to extended screen
-  hs.timer.doAfter(0.3, function()
-    local screens = hs.screen.allScreens()
-    local extendedScreen = nil
-
-    -- Find non-built-in screen
-    for _, screen in ipairs(screens) do
-      if not screen:name():lower():find("built%-in") then
-        extendedScreen = screen
-        break
-      end
-    end
-
-    if extendedScreen then
-      local frame = extendedScreen:frame()
-      local extendedPoint = {
-        x = frame.x + frame.w / 2,
-        y = frame.y + frame.h / 2
-      }
-
-      hs.mouse.setAbsolutePosition(extendedPoint)
-      hs.eventtap.leftClick(extendedPoint)
-
-      hs.alert("⏸️ Video Paused + Control Returned to OneNote")
-    else
-      hs.alert("⚠️ Extended screen not found!")
-    end
-  end)
+  local point = getBuiltInScreenCenter()
+  hs.mouse.setAbsolutePosition(point)
+  hs.eventtap.leftClick(point)
+  hs.alert("👆")
 end)
+
+
 
